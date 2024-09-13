@@ -18,9 +18,16 @@
     </form>
 
     <div id="results" style="display:none;">
-        <p id="weather"></p>
-        <img id="image" src="https://via.placeholder.com/150" alt="Location Image">
+        <div id="weather"></div>
+        <img id="image" src="https://via.placeholder.com/150" alt="City Image">
     </div>
 
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/service-worker.js');
+            });
+        }
+    </script>
 </body>
 </html>

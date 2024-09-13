@@ -31,14 +31,25 @@ async function handleSubmit(e) {
     try {
         // Fetch geographic details
         const geoData = await fetchGeoData(tripDetails['city']);
+        // console.log('Geographic data:', geoData);
+
         if (geoData.geonames && geoData.geonames.length > 0) {
             const { lat, lng } = geoData.geonames[0];
 
             // Fetch weather data
             const weatherData = await fetchWeatherData(lat, lng, tripDetails['date']);
+            // console.log('Weather data:', weatherData);
+
             if (weatherData.data && weatherData.data.length > 0) {
-                tripDetails['temperature'] = weatherData.data[0].temp;
-                tripDetails['weatherDescription'] = weatherData.data[0].weather.description;
+                // Find the weather data for the specific date
+                const weatherForDate = weatherData.data.find(item => item.valid_date === tripDetails['date']);
+                
+                if (weatherForDate) {
+                    tripDetails['temperature'] = weatherForDate.temp;
+                    tripDetails['weatherDescription'] = weatherForDate.weather.description;
+                } else {
+                    throw new Error('No weather data available for the specified date');
+                }
             } else {
                 throw new Error('No weather data available');
             }
@@ -51,7 +62,8 @@ async function handleSubmit(e) {
 
             // Post details and update UI
             const response = await postTripData(tripDetails);
-            updateUserInterface(response);
+            // console.log('tripDetails:', tripDetails);
+            updateUserInterface(tripDetails);
         } else {
             throw new Error('City not found');
         }
@@ -59,6 +71,8 @@ async function handleSubmit(e) {
         console.error('Error:', error);
     }
 }
+
+
 
 // Fetch geographic details from GeoNames API
 async function fetchGeoData(city) {
@@ -80,9 +94,24 @@ async function fetchWeatherData(lat, lng, date) {
         url = `https://api.weatherbit.io/v2.0/forecast/daily?lat=${lat}&lon=${lng}&key=${apiCredentials.weatherbitKey}`;
     }
 
-    const response = await fetch(url);
-    return response.json();
+    // console.log('Fetching weather data from URL:', url);
+
+    try {
+        const response = await fetch(url);
+        if (!response.ok) {
+            const errorText = await response.text();
+            console.error('Error response:', response.status, errorText);
+            throw new Error(`Error ${response.status}: ${errorText}`);
+        }
+        const weatherData = await response.json();
+        // console.log('Weather data received:', weatherData);
+        return weatherData;
+    } catch (error) {
+        console.error('Error fetching weather data:', error);
+        throw error;
+    }
 }
+
 
 // Fetch city image from Pixabay API
 async function fetchCityImage(city) {
@@ -92,7 +121,7 @@ async function fetchCityImage(city) {
 
 // Post trip details to the server
 async function postTripData(details) {
-    const response = await fetch('http://localhost:9000/postData', {
+    const response = await fetch('http://localhost:9090/postData', {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
@@ -104,12 +133,30 @@ async function postTripData(details) {
 
 // Update the UI with the fetched data
 function updateUserInterface(data) {
-    const resultsSection = document.getElementById('results');
-    resultsSection.style.display = 'block';
+    // console.log('Updating UI with data:', data); // Log the data being used
 
-    document.getElementById('weather').textContent = data.weatherDescription || 'Weather data not available';
-    document.getElementById('image').src = data.cityImageUrl || 'https://via.placeholder.com/150'; // Default image
+    const resultsSection = document.getElementById('results');
+    if (resultsSection) {
+        resultsSection.style.display = 'block';
+    } else {
+        console.error('Results section not found');
+    }
+
+    const weatherElement = document.getElementById('weather');
+    if (weatherElement) {
+        weatherElement.textContent = data.weatherDescription || 'Weather data not available';
+    } else {
+        console.error('Weather element not found');
+    }
+
+    const imageElement = document.getElementById('image');
+    if (imageElement) {
+        imageElement.src = data.cityImageUrl || 'https://via.placeholder.com/150'; // Default image
+    } else {
+        console.error('Image element not found');
+    }
 }
+
 
 // Calculate the number of days between today and the provided date
 function calculateDaysUntil(targetDate) {
@@ -119,8 +166,8 @@ function calculateDaysUntil(targetDate) {
 }
 
 // Add event listener to form submission
-document.getElementById('trip').addEventListener('submit', handleSubmit);
+// document.getElementById('trip').addEventListener('submit', handleSubmit);
 
 export {
     handleSubmit
-}
+};

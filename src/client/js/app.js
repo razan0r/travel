@@ -6,7 +6,6 @@ if (form) {
     form.addEventListener('submit', handleSubmit);
 }
 
-
 export {
     handleSubmit,
 };

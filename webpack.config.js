@@ -17,12 +17,26 @@ module.exports = {
           loader: 'babel-loader',
         },
       },
+      {
+        test: /\.scss$/,
+        use: ['style-loader', 'css-loader', 'sass-loader'],
+      },
+      {
+        test: /\.css$/,
+        use: ['style-loader', 'css-loader'],
+      },
     ],
   },
   plugins: [
     new HtmlWebpackPlugin({
       template: './src/views/index.html', 
-    }),
+    }),,
+    new CleanWebpackPlugin(),
+    
+    new WorkboxPlugin.GenerateSW({
+        clientsClaim: true,
+        skipWaiting: true,
+    })
   ],
   devServer: {
     contentBase: path.join(__dirname, 'dist'),

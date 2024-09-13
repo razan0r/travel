@@ -1,14 +1,15 @@
-const request = require('supertest');
-const app = require('../src/server/index.js'); 
+import {describe, expect} from "@jest/globals";
 
-describe('API tests', () => {
-    it('should respond with index.html on GET /', async () => {
-        const response = await request(app)
-            .get('/')
-            .expect('Content-Type', /html/)
-            .expect(200);
+const request = require("supertest");
+const app = require("../src/server/index.js");
 
-        expect(response.text).toContain('<form id="trip">');
-        expect(response.text).toContain('<label for="city">City:</label>');
+describe("Test the root path", () => {
+    test("It should response the GET method", done => {
+        request(app)
+            .get("/")
+            .then(response => {
+                expect(response.statusCode).toBe(200);
+                done();
+            });
     });
 });

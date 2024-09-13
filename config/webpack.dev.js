@@ -62,8 +62,11 @@ module.exports = {
         }),
     
         new CleanWebpackPlugin({
+            // Simulate the removal of files
             dry: true,
+            // Write Logs to Console
             verbose: false,
+            // Automatically remove all unused webpack assets on rebuild
             cleanStaleWebpackAssets: true,
             protectWebpackAssets: false,
            

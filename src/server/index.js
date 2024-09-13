@@ -13,7 +13,8 @@ const path = require('path');
 app.use(cors());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-app.use(express.static('dist'));
+
+app.use(express.static(path.join(__dirname, '../../config/dist')));
 
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, '../../config/dist', 'index.html'));
@@ -42,11 +43,12 @@ const apiKeys = {
 };
 
 app.get('/api/keys', (req, res) => {
-    res.json({ geoNamesUsername, weatherbitKey, pixabayAPIKey }); 
+    res.json(apiKeys);
+
 });
 // Start server
-app.listen(9000, () => {
-    console.log('Server is running on port 9000');
+app.listen(9090, () => {
+    console.log('Server is running on port 9090');
 });
 
 module.exports = app;

@@ -1,6 +1,7 @@
 # Trip Evaluation App
 
 This project is a web application that allows users to submit a city name via a form and receive trip-related information, including weather details and images. It uses several third-party APIs to fetch this data and display it on the client side.
+![image](https://github.com/user-attachments/assets/f4015d51-f8b7-474c-aacd-ce02bcd95f47)
 
 ## Features
 

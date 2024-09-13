@@ -7,16 +7,20 @@
 </head>
 <body>
     <h1>Travel App</h1>
-    <form id="trip-form">
+    <form id="trip">
         <label for="city">City:</label>
         <input type="text" id="city" name="city" required>
+        
         <label for="date">Date:</label>
         <input type="date" id="date" name="date" required>
+        
         <button type="submit">Submit</button>
     </form>
-    <div id="results">
+
+    <div id="results" style="display:none;">
         <p id="weather"></p>
-        <img id="image" src="" alt="Location Image">
+        <img id="image" src="https://via.placeholder.com/150" alt="Location Image">
     </div>
+
 </body>
 </html>

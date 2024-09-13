@@ -1,10 +1,10 @@
 {
-    "name": "evaluate-news-nlp",
+    "name": "travel-app",
     "version": "1.0.0",
-    "description": "A project to evaluate news articles using NLP",
-    "main": "public/server/server.js",
+    "description": "A web application that helps users plan their trips by providing weather forecasts, city information, and images. Users can enter their travel details and get information about their destination, including weather conditions and a photo of the city.",
+    "main": "public/server/index.js",
     "scripts": {
-        "start": "node src/server/server.js",
+        "start": "node src/server/index.js",
         "dev": "webpack serve --config config/webpack.dev.js --open",
         "build": "webpack --config config/webpack.prod.js",
         "test": "jest"
@@ -12,6 +12,7 @@
     "dependencies": {
         "dotenv": "^16.4.5",
         "express": "^4.17.1",
+        "express-async-errors": "^3.1.1",
         "node-fetch": "^2.6.1",
         "postcss-loader": "^8.1.1"
     },
@@ -22,7 +23,9 @@
         "@testing-library/react": "^16.0.1",
         "babel-jest": "^29.7.0",
         "babel-loader": "^9.1.3",
+        "clean-webpack-plugin": "^4.0.0",
         "css-loader": "^7.1.2",
+        "html-loader": "^5.1.0",
         "html-webpack-plugin": "^5.6.0",
         "jest": "^27.5.1",
         "sass": "^1.78.0",

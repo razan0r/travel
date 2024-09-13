@@ -1,0 +1,13 @@
+@import 'variables';
+
+body {
+    background-color: lighten($primary-color, 40%);
+    font-family: 'Comfortaa', sans-serif;
+    color: $secondary-color;
+}
+
+h1 {
+    color: $primary-color;
+    text-align: center;
+    font-weight: 600;
+}

@@ -1,44 +1,76 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const CssMinimizerPlugin = require("css-minimizer-webpack-plugin");
+const WorkboxPlugin = require('workbox-webpack-plugin');
 
 module.exports = {
-  mode: 'development',
-  entry: './src/js/index.js',
-  output: {
-    filename: 'bundle.js',
-    path: path.resolve(__dirname, 'dist'),
-  },
-  devServer: {
-    static: {
-      directory: path.resolve(__dirname, 'dist'),
+    mode: 'development',
+    entry: './src/client/index.js',
+    output: {
+        filename: 'bundle.js',
+        path: path.resolve(__dirname, 'dist'),
+        clean: true
     },
-    hot: true,
-    open: true,
-    historyApiFallback: true, // <-- This ensures all routes fallback to index.html
-  },
-  plugins: [
-    new HtmlWebpackPlugin({
-      template: './src/views/index.html', // <-- Point to your HTML file
-      filename: 'index.html', // Output to dist/index.html
-    }),
-  ],
-  module: {
-    rules: [
-      {
-        test: /\.js$/,
-        exclude: /node_modules/,
-        use: {
-          loader: 'babel-loader',
-        },
-      },
-      {
-        test: /\.scss$/,
-        use: [
-          'style-loader', // Injects styles into DOM
-          'css-loader',   // Turns CSS into CommonJS
-          'sass-loader',  // Compiles Sass to CSS
-        ],
-      },
-    ],
-  },
+    devServer: {
+        static: path.join(__dirname, 'dist'),
+        compress: true,
+        port: 8000,
+    },
+    module: {
+        rules: [
+            {
+                test: /\.scss$/,
+                use: ['style-loader', 'css-loader', 'sass-loader'],
+              },
+              {
+                test: /\.css$/,
+                use: ['style-loader', 'css-loader'],
+              },
+              {
+                test: /\.(png|svg|jpg|gif)$/,
+                use: [
+                    {
+                        loader: 'file-loader',
+                        options: {
+                            name : '[name].[ext]',
+                            outputPath: 'img/',
+                            publicPath: 'img/'
+
+                        }
+                    }
+                ],
+            },
+            {
+                test: /\.(html)$/,
+                use: [{
+                    loader: 'html-loader',
+                }]
+            }
+              
+        ]
+    },
+    
+    plugins: [
+        new HtmlWebpackPlugin({
+            template: './src/client/views/index.html',
+            filename: 'index.html',
+        }),
+        new MiniCssExtractPlugin({
+            filename: 'styles/main.css'
+        }),
+    
+        new CleanWebpackPlugin({
+            dry: true,
+            verbose: false,
+            cleanStaleWebpackAssets: true,
+            protectWebpackAssets: false,
+           
+        }),
+        new WorkboxPlugin.GenerateSW({
+          clientsClaim: true,
+          skipWaiting: true
+      }), 
+    ]
 };
